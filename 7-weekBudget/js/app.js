@@ -6,6 +6,11 @@ class Budget{
         this.budgetLeft = this.budget
     }
 
+    // Substrack from the budget
+    substractFromBudget(amount) {
+        return this.budgetLeft -= amount;
+    }
+
 
 }
 
@@ -36,7 +41,7 @@ class HTML{
         // Clear into HTML
         setTimeout(function() {
             document.querySelector('.primary .alert').remove()
-            // addExpenseForm.reset()
+            addExpenseForm.reset()
         }, 3000)
     }
 
@@ -49,14 +54,34 @@ class HTML{
         li.className = "list-group-item d-flex justify-content-between align-itmes-center"
         // Create the Template
         li.innerHTML = `
-
             ${name}
-            <span class="badge">${amount}</span>
-
+            <span class="badge badge-primary badge-pill">${amount}</span>
         `
-
         // Insert into the HTML
+        expensesList.appendChild(li)
     }
+
+    // Subtract expense amount from budget
+    trackBudget(amount) {
+        const budgetLeftDollars = budget.substractFromBudget(amount)
+        budgetLeft.innerHTML = ` ${budgetLeftDollars} `
+
+        // Check When 25% is left
+        if( (budget.budget / 4) > budgetLeftDollars ) {
+
+            budgetLeft.parentElement.parentElement.classList.remove('alert-success','alert-warning')
+            budgetLeft.parentElement.parentElement.classList.add('alert-danger')
+
+        } else if( (budget.budget / 2) > budgetLeftDollars ){
+            budgetLeft.parentElement.parentElement.classList.remove('alert-success')
+            budgetLeft.parentElement.parentElement.classList.add('alert-warning')
+
+        }
+
+        // console.log(budget);
+        
+        
+    }   
 }
 
 
@@ -110,7 +135,8 @@ function eventListeners() {
         } else {
             // Add the Expenses into the List
             html.addExpenseToList(expenseName, amount)
-            html.printMessage('Added!','alert-success')
+            html.trackBudget(amount)
+            html.printMessage('Added....!','alert-success')
         } 
 
     })
